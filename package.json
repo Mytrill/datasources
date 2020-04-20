@@ -1,0 +1,44 @@
+{
+  "name": "datasouces",
+  "version": "0.1.0",
+  "main": "dist/datasources.cjs.js",
+  "module": "dist/datasources.es5.js",
+  "browser": "dist/datasources.js",
+  "esnext": "dist/esnext/index.js",
+  "typings": "dist/esnext/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Mytrill/datasources"
+  },
+  "license": "MIT",
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "prepublish": "npm run build",
+    "build": "rollup -c && tsc -p tsconfig.esnext.json",
+    "start": "rollup -c -w",
+    "doc": "npm run docs",
+    "docs": "rimraf docs && typedoc src/index.ts",
+    "tsc": "tsc -p tsconfig.esnext.json"
+  },
+  "prettier": {
+    "semi": false,
+    "printWidth": 120
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "13.13.1",
+    "prettier": "2.0.4",
+    "rimraf": "3.0.2",
+    "rollup": "2.6.1",
+    "rollup-plugin-commonjs": "10.1.0",
+    "rollup-plugin-json": "4.0.0",
+    "rollup-plugin-node-resolve": "5.2.0",
+    "rollup-plugin-sourcemaps": "0.5.0",
+    "rollup-plugin-typescript2": "0.27.0",
+    "rollup-plugin-uglify": "6.0.4",
+    "typescript": "3.8.3"
+  }
+}
