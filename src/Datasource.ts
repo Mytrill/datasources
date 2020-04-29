@@ -30,17 +30,10 @@ export interface EntityJoin {
 
 export interface Entity {
   id: string
-  source?: { id: string } // ; attribute?: string
+  source?: { entity: string; id?: string } // ; attribute?: string
   joins?: EntityJoin[]
   mutations?: Mutation[]
 }
-
-//
-// --------------------------------------------
-//
-
-export const ID = "_id"
-export const DELETE = "_delete"
 
 //
 // --------------------------------------------
@@ -70,9 +63,11 @@ export interface QueryRequest {
 }
 
 export interface QueryResponse<T = any> {
-  data: Array<T & WithId>
+  data: DatasourceObject<T>[]
   cache: DatasourceData
 }
+
+export type DatasourceObject<T = any> = T & WithId
 
 //
 // --------------------------------------------
@@ -81,7 +76,8 @@ export interface QueryResponse<T = any> {
 export interface GetRequest {
   type: "get"
   entity: string
-  id: string
+  /** Not needed if the entity specifies a  */
+  id?: string
   // e.g. ["similar", "similar.recipe2"] or "similar.*" or "*" or "*.*"?
   joins?: string[]
   cache?: DatasourceData
@@ -118,11 +114,15 @@ export interface WithId {
   _id: string
 }
 
+export type DatasourceRequest = GetRequest | QueryRequest | SetRequest
+export type DatasourceResponse<T> = GetResponse<T> | QueryResponse<T> | SetResponse<T>
+
 export interface Datasource {
   id: string
-  getEntity(entity: string): Entity
+  getEntity(entity: string, strict?: boolean): Entity
+  registerEntity(entity: Entity): void
 
-  execute<T = any>(request: GetRequest): GetResponse<T>
-  execute<T = any>(request: QueryRequest): QueryResponse<T>
-  execute<T = any>(request: SetRequest): SetResponse<T>
+  execute<T = any>(request: GetRequest): Promise<GetResponse<T>>
+  execute<T = any>(request: QueryRequest): Promise<QueryResponse<T>>
+  execute<T = any>(request: SetRequest): Promise<SetResponse<T>>
 }

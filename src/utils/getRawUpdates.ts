@@ -1,6 +1,8 @@
 import * as immutable from "dot-prop-immutable"
 
-import { Datasource, DELETE, Entity, EntityJoin, ID } from "../Datasource"
+import { DELETE, ID } from "../constants"
+import { Datasource, Entity, EntityJoin } from "../Datasource"
+import { Joins } from "./joins"
 
 //
 // --------------------------------------------
@@ -174,10 +176,6 @@ export interface RawUpdates {
   }
 }
 
-export interface Joins {
-  [id: string]: Joins
-}
-
 export interface GetRawUpdatesPayload {
   datasource: Datasource
   entity: Entity
@@ -201,7 +199,3 @@ export function getRawUpdates(payload: GetRawUpdatesPayload, _result: RawUpdates
 
   return result
 }
-
-//
-// --------------------------------------------
-//
