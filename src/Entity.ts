@@ -8,8 +8,8 @@ export interface BaseAttribute {
   id: string
   required?: boolean
   lazy?: boolean
-  read?: string
-  write?: string
+  read?: Rule
+  write?: Rule
 }
 
 export interface StringAttribute extends BaseAttribute {
@@ -97,8 +97,8 @@ export interface AttributeRestriction {
   value?: any
   defaultValue?: any
   required?: boolean
-  read?: string
-  write?: string
+  read?: Rule
+  write?: Rule
   lazy?: boolean
 }
 
@@ -118,23 +118,52 @@ export interface EntityRestriction {
 // -----------------------------------------------------
 //
 
+export type RuleValue =
+  | { type: "user"; attribute: string[] }
+  | { type: "document"; attribute: string[] }
+  | { type: "update"; attribute: string[] }
+  | { type: "value"; value: string | boolean | number }
+
+export type RuleOperand = "==" | "!=" | "in" | "contains"
+
+export type Rule =
+  | { type: "or"; rules: Rule[] }
+  | { type: "and"; rules: Rule[] }
+  | { type: "condition"; value1: RuleValue; op: RuleOperand; value2: RuleValue }
+
 export interface EntityRules {
-  read?: string
-  write?: string
-  create?: string
-  update?: string
-  delete?: string
+  read?: Rule
+  write?: Rule
+  create?: Rule
+  update?: Rule
+  delete?: Rule
 }
 
 //
 // -----------------------------------------------------
 //
 
-export type EntityType = { id: "document" } | { id: "embedded"; document: string } | { id: "user" }
+export interface InternalEntity {
+  id: string
+  type: EntityType
+  attributes: Attribute[]
+  restrictions: EntityRestriction[]
+  rules: EntityRules
+}
+
+//
+// -----------------------------------------------------
+//
+
+export type EntityType =
+  | { id: "document"; collection: string }
+  | { id: "embedded"; entity: string }
+  | { id: "user"; collection: string }
 
 export interface Entity {
   id: string
   type: EntityType
   attributes: Attribute[]
   restrictions: EntityRestriction[]
+  rules: EntityRules
 }
